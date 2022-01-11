@@ -20,9 +20,9 @@
             <div class="form-group">
                 <select class="select-dropdown" name="task-type">
                     <option value="" disabled selected>Pick a task type</option>
-                    <option value="Today">Today</option>
-                    <option value="This Week">This Week</option>
-                    <option value="This Month">This Month</option>
+                    <option value="High Priority">High Priority</option>
+                    <option value="Medium Priority">Medium Priority</option>
+                    <option value="Low Priority">Low Priority</option>
                 </select>
             </div>
 
@@ -33,9 +33,20 @@
     </header>
 
     <main class="page-content">
+        <!-- TASKS TO DO -->
         <section class="task-list-wrapper">
             <h2 class="list-title">Tasks To Do</h2>
             <ul class="task-list" id="tasks-to-do"></ul>
+        </section>
+        <!-- TASKS IN PROGRESS -->
+        <section class="task-list-wrapper">
+            <h2 class="list-title">Tasks In Progress</h2>
+            <ul class="task-list" id="tasks-in-progress"></ul>
+        </section>
+        <!-- TASKS COMPLETED -->
+        <section class="task-list-wrapper">
+            <h2 class="list-title">Tasks Completed</h2>
+            <ul class="task-list" id="tasks-completed"></ul>
         </section>
     </main>
 
