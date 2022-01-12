@@ -70,6 +70,8 @@ var completeEditTask = function(taskName, taskType, taskId) {
 
     formEl.removeAttribute("data-task-id");
     document.querySelector("#save-task").textContent = "Add Task";
+
+    saveTasks();
 };
 
 
@@ -98,8 +100,9 @@ var createTaskEl = function(taskDataObj) {
     //increases task counter for next unique id
     taskIdCounter++;
 
-    console.log(taskDataObj);
-    console.log(taskDataObj.status);    
+    // console.log(taskDataObj);
+    // console.log(taskDataObj.status);    
+    saveTasks();
 }
 
 //Adds buttons and drop downs to each card...taskId parameter allows us to pass different id's into function
@@ -177,6 +180,8 @@ var deleteTask = function(taskId) {
     }
     //reassign tasks array to be the same as updatedTaskArr
     tasks = updatedTaskArr;
+
+    saveTasks();
 }
 
 var editTask = function(taskId) {
@@ -222,8 +227,14 @@ var taskStatusChangeHandler = function(event) {
             tasks[i].status = statusValue;
         }
     }
-console.log(tasks);
+
+    console.log(tasks);
+    saveTasks();
 };
+
+var saveTasks = function() {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+}
 
 formEl.addEventListener("submit", taskFormHandler);             //submit allows submittion with button or enter key
 
