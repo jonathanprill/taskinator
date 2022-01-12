@@ -6,9 +6,7 @@ var tasksInProgressEl = document.querySelector("#tasks-in-progress");
 var tasksCompletedEl = document.querySelector("#tasks-completed");
 
 //Start Local memory lesson
-var tasks = [
-    
-];
+var tasks = [];
 
 var taskFormHandler = function(event) {
 
@@ -76,34 +74,48 @@ var completeEditTask = function(taskName, taskType, taskId) {
 
 
 var createTaskEl = function(taskDataObj) {
-    var listItemEl = document.createElement("li");              //create new task item
-    listItemEl.className = "task-item";                         //Styles using CSS
-
-    //add task id as a custom attribute
+    var listItemEl = document.createElement("li");
+    listItemEl.className = "task-item";
     listItemEl.setAttribute("data-task-id", taskIdCounter);
-
-    var taskInfoEl = document.createElement("div");             // create div to hold task info and add to list item
-    taskInfoEl.className = "task-info";                         // give it a class name
-    taskInfoEl.innerHTML = "<h3 class='task-name'>" + taskDataObj.name + "</h3><span class='task-type'>" + taskDataObj.type + "</span>";    // add HTML content to div using LEXICAL SCOPING
-
+  
+    var taskInfoEl = document.createElement("div");
+    taskInfoEl.className = "task-info";
+    taskInfoEl.innerHTML =
+      "<h3 class='task-name'>" + taskDataObj.name + "</h3><span class='task-type'>" + taskDataObj.type + "</span>";
     listItemEl.appendChild(taskInfoEl);
-    
+  
     var taskActionsEl = createTaskActions(taskIdCounter);
     listItemEl.appendChild(taskActionsEl);
-
-    tasksToDoEl.appendChild(listItemEl);
-    
-    tasksToDoEl.appendChild(listItemEl);                        //Appends the element to the task list
-   
+  
+    switch (taskDataObj.status) {
+      case "to do":
+        taskActionsEl.querySelector("select[name='status-change']").selectedIndex = 0;
+        tasksToDoEl.append(listItemEl);
+        break;
+      case "in progress":
+        taskActionsEl.querySelector("select[name='status-change']").selectedIndex = 1;
+        tasksInProgressEl.append(listItemEl);
+        break;
+      case "completed":
+        taskActionsEl.querySelector("select[name='status-change']").selectedIndex = 2;
+        tasksCompletedEl.append(listItemEl);
+        break;
+      default:
+        console.log("Something went wrong!");
+    }
+  
+    // save task as an object with name, type, status, and id properties then push it into tasks array
     taskDataObj.id = taskIdCounter;
+  
     tasks.push(taskDataObj);
-    //increases task counter for next unique id
-    taskIdCounter++;
-
-    // console.log(taskDataObj);
-    // console.log(taskDataObj.status);    
+  
+    // save tasks to localStorage
     saveTasks();
-}
+  
+    // increase task counter for next unique task id
+    taskIdCounter++;
+};
+  
 
 //Adds buttons and drop downs to each card...taskId parameter allows us to pass different id's into function
 var createTaskActions = function(taskId) {
@@ -222,22 +234,45 @@ var taskStatusChangeHandler = function(event) {
       }
 
     //update tasks in tasks array
-    for (var i=0; i < tasks.length; i++) {
+    for (var i = 0; i < tasks.length; i++) {
         if (tasks[i].id === parseInt(taskId)) {
             tasks[i].status = statusValue;
         }
     }
-
-    console.log(tasks);
+    
     saveTasks();
 };
+
 
 var saveTasks = function() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
 }
+
+var loadTasks = function() {
+    var savedTasks = localStorage.getItem("tasks");
+    // if there are no tasks, set tasks to an empty array and return out of the function
+    if (!savedTasks) {
+      return false;
+    }
+    console.log("Saved tasks found!");
+    // else, load up saved tasks
+  
+    // parse into array of objects
+    savedTasks = JSON.parse(savedTasks);
+  
+    // loop through savedTasks array
+    for (var i = 0; i < savedTasks.length; i++) {
+      // pass each task object into the `createTaskEl()` function
+      createTaskEl(savedTasks[i]);
+    }
+  };
+
+
 
 formEl.addEventListener("submit", taskFormHandler);             //submit allows submittion with button or enter key
 
 pageContentEl.addEventListener("click", taskButtonHandler);  
 
 pageContentEl.addEventListener("change", taskStatusChangeHandler);
+
+loadTasks();
