@@ -12,7 +12,7 @@ var taskFormHandler = function(event) {
 
     event.preventDefault();             //overrides  default browser behavior
     var taskNameInput = document.querySelector("input[name='task-name']").value;   //the dot value is what retreives the input from the box
-    var taskTypeInput = document.querySelector("select[name='task-type']").value
+    var taskTypeInput = document.querySelector("select[name='task-type']").value;
 
     //check if input values are empty strings 
     if (!taskNameInput || !taskTypeInput) {
@@ -20,17 +20,12 @@ var taskFormHandler = function(event) {
         return false;
     }
 
-    formEl.reset();
+      // reset form fields for next task to be entered
+    document.querySelector("input[name='task-name']").value = "";
+    document.querySelector("select[name='task-type']").selectedIndex = 0;
 
     //sets isEdit to false when task is created and true when it is edited
     var isEdit = formEl.hasAttribute("data-task-id");
-
-    //packages up data as an object
-    var taskDataObj = {
-        name: taskNameInput,
-        type: taskTypeInput,
-        status: "to do"
-    };
 
     //has data atrribute, so get task id and call function to complete edit process
     if (isEdit) {
@@ -41,12 +36,13 @@ var taskFormHandler = function(event) {
     else {
         var taskDataObj = {
             name: taskNameInput,
-            type: taskTypeInput
+            type: taskTypeInput,
+            status: "to do",
         };
         createTaskEl(taskDataObj);
     }
 
-}
+};
 
 var completeEditTask = function(taskName, taskType, taskId) {
     //find the matching task list item
